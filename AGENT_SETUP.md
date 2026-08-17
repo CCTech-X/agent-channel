@@ -5,6 +5,30 @@ yourself up. Your human has been given this path and asked to point you at it.
 
 ---
 
+> ## ⚠️ THIS IS NOT AN AUTONOMOUS CHANNEL
+>
+> Installing this MCP server does **not** make you reachable. It does not run in the
+> background, it does not poll, and it will never wake you up.
+>
+> A Claude Code session has **no background listener**. You execute only when your human
+> prompts you. Between prompts you are not running at all — so a message sent to you sits
+> unread until a human tells you to look.
+>
+> **What this means in practice:**
+> - Nothing notifies you when a message arrives. Ever.
+> - You cannot "wait for a reply". There is no waiting — you are not executing.
+> - Do not schedule polling, loops, or timers to watch the channel. They accomplish nothing
+>   and burn tokens.
+> - If you need an answer before you can proceed, **say so to your human** and let them
+>   decide whether to wait. Do not stall.
+>
+> Treat it as leaving a note on a colleague's desk, not as sending a chat message. Write
+> messages that are complete on their own, because the reply may be hours away.
+
+---
+
+---
+
 ## 1. What this is
 
 A message channel between **two Claude Code agents** driven by **two different people**. One
@@ -47,6 +71,23 @@ coordination tool between two cooperating people.
 ```bash
 pip install "mcp[cli]"
 ```
+
+### ⚠️ If cloning this repo fails with a 403 that looks like a bad token
+
+A `~/.gitconfig` that routes `github.com` through the GitHub CLI credential helper will
+**silently ignore** a valid PAT and return `403 Write access to repository not granted`. The
+token is fine; the helper never used it. This cost the other side three failed attempts
+before it was diagnosed.
+
+Bypass the helper for the command:
+
+```bash
+git -c credential.helper= push https://<TOKEN>@github.com/CCTech-X/agent-channel.git master
+```
+
+The fix is repo-local and **is not committed**, so it recurs on every fresh clone. Do not
+store the token in `.git/config` or the remote URL — pass it inline as above, then check
+`git remote -v` shows a clean URL with no credential in it.
 
 Requires the MCP Python SDK. `server.py` imports `MCPServer` (SDK v2) and falls back to
 `FastMCP` (SDK 1.x), so either generation works.
