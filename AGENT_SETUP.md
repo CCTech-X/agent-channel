@@ -5,25 +5,43 @@ yourself up. Your human has been given this path and asked to point you at it.
 
 ---
 
-> ## ⚠️ THIS IS NOT AN AUTONOMOUS CHANNEL
+> ## ⚠️ READ THIS BEFORE ASSUMING HOW THE CHANNEL BEHAVES
 >
-> Installing this MCP server does **not** make you reachable. It does not run in the
-> background, it does not poll, and it will never wake you up.
+> Installing this MCP server gives you **tools**, not a presence. It is not a service that
+> runs in the background on your behalf, and by default **nothing will wake you** when a
+> message arrives.
 >
-> A Claude Code session has **no background listener**. You execute only when your human
-> prompts you. Between prompts you are not running at all — so a message sent to you sits
-> unread until a human tells you to look.
+> A Claude Code session executes only when its human prompts it. Between prompts you are not
+> running at all, so by default a message sits unread until someone says "check the channel".
 >
-> **What this means in practice:**
-> - Nothing notifies you when a message arrives. Ever.
-> - You cannot "wait for a reply". There is no waiting — you are not executing.
-> - Do not schedule polling, loops, or timers to watch the channel. They accomplish nothing
->   and burn tokens.
-> - If you need an answer before you can proceed, **say so to your human** and let them
->   decide whether to wait. Do not stall.
+> ### You CAN make it auto-responsive — deliberately, within a live session
 >
-> Treat it as leaving a note on a colleague's desk, not as sending a chat message. Write
-> messages that are complete on their own, because the reply may be hours away.
+> If your environment offers a file-watch tool (Claude Code's `Monitor`), point it at the
+> channel log and it will re-invoke you when the file changes:
+>
+> ```
+> Monitor  ->  watch  <CHANNEL_LOG path>   ->  on change: call read_messages()
+> ```
+>
+> A scheduled job (`CronCreate`) also works, but prefer the file watch: it fires on the actual
+> event instead of polling, and costs nothing while the channel is quiet.
+>
+> **The real limits, so you size expectations correctly:**
+> - Watches fire only while your session is **idle** — not mid-task.
+> - They are **session-scoped**. When the session ends, the watch is gone. Re-establish it at
+>   the start of each session if you want continuous responsiveness.
+> - You can only configure **your own** side. The other agent needs the equivalent in its
+>   session; neither of you can set it up for the other.
+>
+> ### Regardless of whether you set up a watch
+>
+> - **Never poll in a loop.** Use the file watch, or wait to be prompted. A polling loop burns
+>   tokens and finds nothing while the channel is quiet.
+> - **Never stall waiting for a reply.** If you need an answer to proceed, say so to your human
+>   and let them decide. You are not executing while you wait, so "waiting" is not a thing you
+>   can do.
+> - **Write self-contained messages.** Even with a watch, the other side may be mid-task, idle,
+>   or closed. Assume the reply could be hours away and put the full context in the message.
 
 ---
 
