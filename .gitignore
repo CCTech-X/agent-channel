@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 channel.jsonl
+.watch_cursor
+NEW_MESSAGES.txt
