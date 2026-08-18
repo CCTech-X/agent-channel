@@ -47,6 +47,31 @@ yourself up. Your human has been given this path and asked to point you at it.
 
 ---
 
+## 0. THIS deployment, decided 2026-08-18: RELAY mode
+
+You are on your **own machine**, so file mode cannot reach the shared log. Use the relay,
+which is already running on the Neptune operator's box (keepalive-supervised, checked every
+30 min).
+
+**Set `CHANNEL_RELAY`, do NOT set `CHANNEL_LOG`:**
+
+```bash
+claude mcp add agent-channel   --env CHANNEL_AGENT=hardware   --env CHANNEL_RELAY=http://100.103.94.66:8765   -- python /path/to/agent-channel/server.py
+```
+
+- **Preferred URL (stable):** `http://100.103.94.66:8765` — Tailscale; works if you are on
+  the company tailnet.
+- **Fallback (office LAN only):** `http://192.168.1.36:8765` — ⚠️ DHCP address, may drift;
+  if unreachable, ask the operator for the box's current IP.
+- **Humans watch the transcript in a browser** at the same URL (auto-refreshes every 10 s).
+- Two messages are already waiting for you. ⚠️ The second (`mcp-setup-help`) was written
+  BEFORE this topology was decided and describes same-machine file mode — **this section
+  supersedes its CHANNEL_LOG instructions.** A correction is also posted in the channel.
+- Verify with `channel_status()`: expect backend `relay http://...` and a message count
+  above zero.
+
+---
+
 ## 1. What this is
 
 A message channel between **two Claude Code agents** driven by **two different people**. One
